@@ -1,0 +1,86 @@
+{% extends 'requests_app/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-clipboard-list"></i> Список заявок</h2>
+    <a href="{% url 'request_create' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Новая заявка
+    </a>
+</div>
+
+<!-- Фильтры в виде карточки -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Статус</label>
+                <select name="status" class="form-select">
+                    <option value="">Все</option>
+                    {% for status in statuses %}
+                        <option value="{{ status.id }}" {% if selected_status == status.id|stringformat:"s" %}selected{% endif %}>{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Тип оборудования</label>
+                <select name="eq_type" class="form-select">
+                    <option value="">Все</option>
+                    {% for eq in equipment_types %}
+                        <option value="{{ eq.id }}" {% if selected_eq_type == eq.id|stringformat:"s" %}selected{% endif %}>{{ eq.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Поиск</label>
+                <input type="text" name="search" class="form-control" placeholder="Номер, описание, заказчик..." value="{{ request.GET.search }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i> Применить
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Карточки заявок -->
+<div class="row">
+    {% for req in requests %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm hover-shadow">
+            <div class="card-header bg-{{ req.status.code|default:'secondary' }} text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tag"></i> {{ req.request_number }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong><i class="fas fa-calendar"></i> Дата:</strong> {{ req.created_at|date:"d.m.Y H:i" }}</p>
+                <p class="mb-1"><strong><i class="fas fa-tools"></i> Тип:</strong> {{ req.equipment_type.name }}</p>
+                <p class="mb-1"><strong><i class="fas fa-box"></i> Модель:</strong> {{ req.model }}</p>
+                <p class="mb-1"><strong><i class="fas fa-user"></i> Заказчик:</strong> {{ req.customer_name }}</p>
+                <p class="mb-1"><strong><i class="fas fa-phone"></i> Телефон:</strong> {{ req.customer_phone }}</p>
+                <p class="mb-1"><strong><i class="fas fa-info-circle"></i> Статус:</strong>
+                    <span class="badge bg-{{ req.status.code|default:'secondary' }}">{{ req.status.name }}</span>
+                </p>
+                <p class="mb-1"><strong><i class="fas fa-user-cog"></i> Ответственный:</strong> {{ req.assigned_to.full_name|default:"не назначен" }}</p>
+                <p class="mb-0"><strong><i class="fas fa-align-left"></i> Проблема:</strong> {{ req.problem_description|truncatechars:80 }}</p>
+            </div>
+            <div class="card-footer bg-transparent d-flex justify-content-between">
+                <a href="{% url 'request_detail' req.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-eye"></i> Детали
+                </a>
+                {% if perms.requests_app.change_request %}
+                <a href="{% url 'request_update' req.pk %}" class="btn btn-sm btn-outline-warning">
+                    <i class="fas fa-edit"></i> Ред.
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> Заявок нет
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

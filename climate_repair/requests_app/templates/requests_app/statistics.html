@@ -1,0 +1,73 @@
+{% extends 'requests_app/base.html' %}
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-chart-bar"></i> Статистика</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-check-circle"></i> Количество выполненных заявок
+            </div>
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ completed_count }}</h3>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-clock"></i> Среднее время ремонта (дни)
+            </div>
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ avg_days }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-chart-pie"></i> Распределение по типам оборудования
+            </div>
+            <div class="card-body">
+                <canvas id="typeChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('typeChart').getContext('2d');
+    const typeData = {
+        labels: [{% for item in type_stats %}'{{ item.name }}',{% endfor %}],
+        datasets: [{
+            label: 'Количество заявок',
+            data: [{% for item in type_stats %}{{ item.request_count }},{% endfor %}],
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+            ],
+            borderWidth: 1
+        }]
+    };
+    new Chart(ctx, {
+        type: 'pie',
+        data: typeData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

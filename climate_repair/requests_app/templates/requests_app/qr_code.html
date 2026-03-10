@@ -1,0 +1,9 @@
+{% extends 'requests_app/base.html' %}
+{% block content %}
+<h2>QR-код для оценки качества</h2>
+<p>Заявка № {{ request_obj.request_number }}</p>
+<p>Отсканируйте код, чтобы перейти к опросу:</p>
+<img src="data:image/png;base64,{{ qr_code }}" alt="QR Code">
+<br>
+<a href="{% url 'request_detail' request_obj.pk %}" class="btn btn-primary mt-3">Назад к заявке</a>
+{% endblock %}

@@ -1,0 +1,39 @@
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+}
+.bg-open {
+    background-color: #17a2b8 !important;
+}
+.bg-in_progress {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+.bg-waiting_parts {
+    background-color: #fd7e14 !important;
+}
+.bg-completed {
+    background-color: #28a745 !important;
+}
+.card, .btn, .nav-tabs .nav-link {
+    transition: all 0.2s ease-in-out;
+}
+.btn:hover {
+    transform: scale(1.05);
+}
+.nav-tabs .nav-link:hover {
+    background-color: #f8f9fa;
+}
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
